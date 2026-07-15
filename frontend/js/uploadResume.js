@@ -35,6 +35,7 @@ async function initUploadFlow() {
       errorCard.classList.remove('hidden');
       errorTitle.textContent = 'Job Posting Closed';
       errorDesc.textContent = `The posting for "${job.title}" is no longer accepting new candidate applications.`;
+      showLoader(false);
       return;
     }
 
@@ -60,7 +61,7 @@ async function initUploadFlow() {
     jobDetailsSection.style.display = 'none';
     uploadCard.classList.add('hidden');
     errorCard.classList.remove('hidden');
-    errorTitle.textContent = 'Job Posting Unavailable';
+    errorTitle.textContent = 'Job is unavailable';
     errorDesc.textContent = 'The requested job listing could not be found or has been removed.';
     showLoader(false);
     return;

@@ -563,6 +563,11 @@ main.main-content {
   font-weight: 500;
 }
 
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }

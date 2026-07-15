@@ -109,14 +109,16 @@ function setupTabs() {
   setTimeout(updateTabIndicator, 100);
 
   tabs.forEach(tab => {
-    tab.addEventListener('click', (e) => {
+    tab.addEventListener('click', async (e) => {
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       activeTab = tab.dataset.status;
       updateTabIndicator();
       
       if (activeJobId) {
-        renderApplicationsList();
+        showLoader(true);
+        await refreshApplications();
+        showLoader(false);
       }
     });
   });
@@ -175,13 +177,12 @@ async function loadSelectedJobData() {
 }
 
 /**
- * Fetch all applications for the active job
+ * Fetch applications for the active job based on the active tab status
  */
 async function refreshApplications() {
   try {
-    // Omit status parameter to retrieve ALL applications, enabling smooth client side filtering
-    // Sort by Match Score from high to low
-    applications = await getApplications(activeJobId, null, true);
+    // Retrieve applications for this job matching the active tab status
+    applications = await getApplications(activeJobId, activeTab, true);
     renderApplicationsList();
   } catch (error) {
     console.error('Failed to fetch applications:', error);
