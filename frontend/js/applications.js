@@ -434,25 +434,24 @@ async function handleScheduleSubmit(e) {
   const inputLink = document.getElementById('interview-link').value.trim();
   const inputNotes = document.getElementById('interview-notes').value.trim();
 
-  // Convert time to ISO String
+  // Convert time to ISO String (split millisecond and timezone details for strict backend format matching)
   let isoTime = '';
   try {
-    isoTime = new Date(inputTime).toISOString();
+    isoTime = new Date(inputTime).toISOString().split('.')[0] + 'Z';
   } catch (err) {
     showToast('Invalid Date', 'Please select a valid date and time.', 'error');
     return;
   }
 
   showLoader(true);
-  closeInterviewModal();
 
   try {
     // 1. Create scheduled interview record
     await scheduleInterview({
       application_id: selectedAppForInterview.id,
       scheduled_at: isoTime,
-      meeting_link: inputLink,
-      notes: inputNotes
+      meeting_link: inputLink || null,
+      notes: inputNotes || null
     });
 
     // 2. Transition application status to interviewing
@@ -462,6 +461,9 @@ async function handleScheduleSubmit(e) {
 
     // 3. Draft & trigger email client invitation (mailto)
     triggerMailtoInvite(selectedAppForInterview, inputTime, inputLink, inputNotes);
+
+    // Close modal on success
+    closeInterviewModal();
 
     // Refresh data
     await refreshApplications();
@@ -498,7 +500,7 @@ We reviewed your profile and resume matches our requirements. We would like to i
 
 Details:
 Date/Time: ${dateFormatted}
-Meeting Link: ${meetingLink}
+Meeting Link: ${meetingLink || 'To be shared'}
 
 ${notes ? `Additional Instructions:\n${notes}\n` : ''}
 We look forward to meeting you.
@@ -506,7 +508,8 @@ We look forward to meeting you.
 Best regards,
 Hiring Team`;
 
-  const mailtoUrl = `mailto:${app.candidate.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const candidateEmail = app.candidate?.email || '';
+  const mailtoUrl = `mailto:${candidateEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   
   // Launch mail client in a timeout to avoid interrupting page flow
   setTimeout(() => {
