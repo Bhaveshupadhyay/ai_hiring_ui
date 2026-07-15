@@ -10,6 +10,14 @@ const getBaseUrl = () => {
 
 const BASE_URL = getBaseUrl();
 
+// Wake up the Render server if it's the first time opening the website in this session
+if (!sessionStorage.getItem('render_server_woken')) {
+  sessionStorage.setItem('render_server_woken', 'true');
+  fetch(BASE_URL)
+    .then(res => console.log('Render server wake-up ping status:', res.status))
+    .catch(err => console.error('Failed to send Render server wake-up ping:', err));
+}
+
 // Static API endpoint mappings to avoid loading openapi.json dynamically
 const ROUTES = {
   'generate_job_description_api_v1_jobs_generate_post': { path: '/api/v1/jobs/generate', method: 'POST' },
@@ -77,45 +85,64 @@ async function request(operationId, pathParams = {}, queryParams = {}, body = nu
     }
   }
 
-  const res = await fetch(finalUrl, options);
+  const maxRetries = 3;
+  let attempts = 0;
 
-  // Status code validation
-  if (res.status === 204) {
-    return null;
-  }
+  while (true) {
+    try {
+      attempts++;
+      const res = await fetch(finalUrl, options);
 
-  let data = null;
-  const contentType = res.headers.get('content-type');
-  if (contentType && contentType.includes('application/json')) {
-    data = await res.json();
-  } else {
-    data = await res.text();
-  }
+      // Status code validation
+      if (res.status === 204) {
+        return null;
+      }
 
-  if (!res.ok) {
-    let errorMsg = `HTTP Error ${res.status}: ${res.statusText}`;
-    if (data && typeof data === 'object') {
-      if (data.detail) {
-        if (Array.isArray(data.detail)) {
-          // Parse FastAPI ValidationError: [{loc: [...], msg: "...", type: "..."}]
-          errorMsg = data.detail.map(err => {
-            const locPath = err.loc ? err.loc.join('.') : '';
-            return `${locPath ? locPath + ': ' : ''}${err.msg}`;
-          }).join(', ');
-        } else {
-          errorMsg = String(data.detail);
+      let data = null;
+      const contentType = res.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        data = await res.text();
+      }
+
+      if (!res.ok) {
+        let errorMsg = `HTTP Error ${res.status}: ${res.statusText}`;
+        if (data && typeof data === 'object') {
+          if (data.detail) {
+            if (Array.isArray(data.detail)) {
+              // Parse FastAPI ValidationError: [{loc: [...], msg: "...", type: "..."}]
+              errorMsg = data.detail.map(err => {
+                const locPath = err.loc ? err.loc.join('.') : '';
+                return `${locPath ? locPath + ': ' : ''}${err.msg}`;
+              }).join(', ');
+            } else {
+              errorMsg = String(data.detail);
+            }
+          } else if (data.message) {
+            errorMsg = data.message;
+          }
         }
-      } else if (data.message) {
-        errorMsg = data.message;
+        const apiError = new Error(errorMsg);
+        apiError.status = res.status;
+        apiError.data = data;
+        throw apiError;
+      }
+
+      return data;
+    } catch (error) {
+      console.error(`API request failed (attempt ${attempts} of ${maxRetries + 1}):`, error);
+      if (error.status === 404 || error.status === 400) {
+        throw error;
+      }
+      if (attempts <= maxRetries) {
+        console.log(`Waiting 60 seconds before retrying (Attempt ${attempts} of ${maxRetries})...`);
+        await new Promise(resolve => setTimeout(resolve, 60000));
+      } else {
+        throw error;
       }
     }
-    const apiError = new Error(errorMsg);
-    apiError.status = res.status;
-    apiError.data = data;
-    throw apiError;
   }
-
-  return data;
 }
 
 // -------------------------------------------------------------
