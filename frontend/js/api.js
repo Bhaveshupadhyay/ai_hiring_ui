@@ -3,8 +3,6 @@
  * DO NOT hardcode endpoints; all URLs, methods, and structures are verified via the schema.
  */
 
-let openapiSchema = null;
-
 // Determine backend base url
 const getBaseUrl = () => {
   return 'https://ai-hiring-95i2.onrender.com';
@@ -12,62 +10,39 @@ const getBaseUrl = () => {
 
 const BASE_URL = getBaseUrl();
 
-/**
- * Load openapi.json schema from cache or fetch from host
- */
-async function loadSchema() {
-  if (openapiSchema) return openapiSchema;
-
-  const pathsToTry = [
-    '/openapi.json',
-    '../openapi.json',
-    '../../openapi.json',
-    './openapi.json',
-    `${BASE_URL}/openapi.json`
-  ];
-
-  for (const path of pathsToTry) {
-    try {
-      const response = await fetch(path);
-      if (response.ok) {
-        openapiSchema = await response.json();
-        console.log(`OpenAPI schema loaded successfully from ${path}`);
-        return openapiSchema;
-      }
-    } catch (e) {
-      // Suppress error and try next fallback
-    }
-  }
-
-  throw new Error("Unable to load openapi.json from standard paths. Please verify API is running.");
-}
+// Static API endpoint mappings to avoid loading openapi.json dynamically
+const ROUTES = {
+  'generate_job_description_api_v1_jobs_generate_post': { path: '/api/v1/jobs/generate', method: 'POST' },
+  'get_jobs_api_v1_jobs_get': { path: '/api/v1/jobs', method: 'GET' },
+  'create_job_api_v1_jobs_post': { path: '/api/v1/jobs', method: 'POST' },
+  'get_job_api_v1_jobs__id__get': { path: '/api/v1/jobs/{id}', method: 'GET' },
+  'update_job_api_v1_jobs__id__put': { path: '/api/v1/jobs/{id}', method: 'PUT' },
+  'delete_job_api_v1_jobs__id__delete': { path: '/api/v1/jobs/{id}', method: 'DELETE' },
+  'update_job_status_api_v1_jobs__id__status_post': { path: '/api/v1/jobs/{id}/status', method: 'POST' },
+  'get_job_applicants_count_api_v1_jobs__id__applicants_count_get': { path: '/api/v1/jobs/{id}/applicants/count', method: 'GET' },
+  'upload_resume_api_v1_resume_upload_post': { path: '/api/v1/resume/upload', method: 'POST' },
+  'get_candidates_api_v1_candidates_get': { path: '/api/v1/candidates', method: 'GET' },
+  'get_candidate_api_v1_candidate__id__get': { path: '/api/v1/candidate/{id}', method: 'GET' },
+  'match_candidate_to_job_api_v1_applications_match_post': { path: '/api/v1/applications/match', method: 'POST' },
+  'get_applications_api_v1_applications_get': { path: '/api/v1/applications', method: 'GET' },
+  'review_application_api_v1_applications__id__patch': { path: '/api/v1/applications/{id}', method: 'PATCH' },
+  'update_application_status_api_v1_applications__id__status_post': { path: '/api/v1/applications/{id}/status', method: 'POST' },
+  'get_interviews_api_v1_interviews_get': { path: '/api/v1/interviews', method: 'GET' },
+  'schedule_interview_api_v1_interviews_post': { path: '/api/v1/interviews', method: 'POST' }
+};
 
 /**
  * Helper to make a schema-verified request to the API
  */
 async function request(operationId, pathParams = {}, queryParams = {}, body = null) {
-  const schema = await loadSchema();
+  const route = ROUTES[operationId];
 
-  let matchedPath = null;
-  let matchedMethod = null;
-  let routeMeta = null;
-
-  // Find the endpoint by operationId
-  for (const [path, pathItem] of Object.entries(schema.paths)) {
-    for (const [method, operation] of Object.entries(pathItem)) {
-      if (operation.operationId === operationId) {
-        matchedPath = path;
-        matchedMethod = method.toUpperCase();
-        routeMeta = operation;
-        break;
-      }
-    }
-    if (matchedPath) break;
+  if (!route) {
+    throw new Error(`API operation '${operationId}' is not defined.`);
   }
 
-  if (!matchedPath) {
-    throw new Error(`API operation '${operationId}' is not defined in the schema.`);
-  }
+  const matchedPath = route.path;
+  const matchedMethod = route.method;
 
   // Construct URL replacing path params (e.g. {id})
   let url = matchedPath;
