@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Resume - AI Hiring Automation</title>
+  <meta name="description" content="Apply for open positions by submitting your resume PDF.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body style="display: block; background-color: var(--bg);">
+
+  <!-- Branding header -->
+  <header style="background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); padding: 16px 32px; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 100;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <img src="assets/logo.svg" alt="Company Logo" style="height: 32px; width: auto;">
+      <span style="font-size: 18px; font-weight: 700; background: linear-gradient(135deg, var(--primary), #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AIGravity Hire Portal</span>
+    </div>
+  </header>
+
+  <!-- Centered Main Content -->
+  <main style="max-width: 800px; width: 100%; margin: 40px auto; padding: 0 20px;">
+    
+    <!-- Red Alert for Errors (Hidden initially) -->
+    <div class="alert alert-danger hidden" id="upload-error-alert">
+      <i class="fas fa-exclamation-circle alert-icon"></i>
+      <div class="alert-message" id="upload-error-message">Resume upload failed. Please try again.</div>
+    </div>
+
+    <!-- Job Details Section (Hidden initially until loaded) -->
+    <section class="job-detail-card" id="job-details-section" style="display: none;">
+      <h1 class="job-detail-title" id="job-title-display">-</h1>
+      
+      <div class="job-meta-list">
+        <div class="job-meta-item">
+          <i class="fas fa-briefcase"></i>
+          <span id="job-exp-display">-</span>
+        </div>
+        <div class="job-meta-item">
+          <i class="fas fa-graduation-cap"></i>
+          <span id="job-edu-display">-</span>
+        </div>
+        <div class="job-meta-item">
+          <i class="fas fa-calendar-day"></i>
+          <span id="job-date-display">-</span>
+        </div>
+      </div>
+
+      <div class="job-section">
+        <h2 class="job-section-title">About the Role</h2>
+        <p class="job-section-content" id="job-summary-display">-</p>
+      </div>
+
+      <div class="job-section">
+        <h2 class="job-section-title">Key Responsibilities</h2>
+        <p class="job-section-content" id="job-responsibilities-display">-</p>
+      </div>
+
+      <div class="job-section">
+        <h2 class="job-section-title">Requirements</h2>
+        <p class="job-section-content" id="job-requirements-display">-</p>
+      </div>
+
+      <div class="job-section" id="job-nice-to-have-wrapper" style="display: none;">
+        <h2 class="job-section-title">Nice to Have</h2>
+        <p class="job-section-content" id="job-nice-to-have-display">-</p>
+      </div>
+    </section>
+
+    <!-- Upload Card -->
+    <section class="card form-card" id="upload-card" style="max-width: 100%; padding: 40px 32px;">
+      <div class="form-header" style="text-align: center; margin-bottom: 24px;">
+        <h2 class="form-title">Submit Your Application</h2>
+        <p class="form-desc">Please upload your professional resume in PDF format. Our AI match engine will automatically parse your skills and match them to our requirements.</p>
+      </div>
+
+      <form id="resume-upload-form">
+        <!-- Drag & Drop container -->
+        <div class="upload-dropzone" id="dropzone">
+          <input type="file" id="file-input" accept=".pdf" style="display: none;" required>
+          
+          <i class="fas fa-cloud-upload-alt upload-icon"></i>
+          <div class="upload-title">Drag & drop your resume PDF here</div>
+          <div class="upload-subtitle">or click to browse from your device</div>
+          <span style="font-size: 11px; color: var(--text-muted); font-weight: 500;">Maximum file size: 10MB. PDF only.</span>
+        </div>
+
+        <!-- Selected File List (Shown after selection) -->
+        <div style="display: flex; justify-content: center; width: 100%;">
+          <div class="selected-file-card hidden" id="file-display-card">
+            <div class="file-info">
+              <i class="fas fa-file-pdf file-icon"></i>
+              <span class="file-name" id="selected-file-name">filename.pdf</span>
+            </div>
+            <button type="button" class="btn-remove-file" id="btn-remove-file" aria-label="Remove selected file">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div style="margin-top: 32px; display: flex; justify-content: center;">
+          <button type="submit" id="btn-submit-resume" class="btn btn-primary" style="height: 48px; width: 100%; max-width: 320px;" disabled>
+            Submit Application
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Success Screen (Hidden initially) -->
+    <section class="card form-card success-screen hidden" id="success-screen" style="max-width: 100%;">
+      <div class="success-icon" style="background-color: var(--success-light); color: var(--success);">
+        <i class="fas fa-check"></i>
+      </div>
+      <h2 class="success-title">Thank You!</h2>
+      <p class="success-desc">We have successfully received your application and resume. Our AI matchmaking system is comparing your profile against our requirements.</p>
+      
+      <div style="border-top: 1px solid var(--border-color); padding-top: 24px; max-width: 450px; margin: 24px auto 0 auto; text-align: center;">
+        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">If your profile and experience match the requirements for this role, our recruiting and engineering team will contact you directly to schedule an interview.</p>
+      </div>
+    </section>
+
+    <!-- Job Closed/Not Found Empty State (Hidden initially) -->
+    <section class="card empty-state hidden" id="candidate-error-card">
+      <i class="fas fa-briefcase-slash empty-illustration" style="font-size: 54px; margin-bottom: 16px;"></i>
+      <h2 class="empty-title" id="candidate-error-title">Job Posting Unavailable</h2>
+      <p class="empty-desc" id="candidate-error-desc">This job listing could not be found, or is no longer accepting new resumes.</p>
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script type="module" src="js/uploadResume.js"></script>
+</body>
+</html>

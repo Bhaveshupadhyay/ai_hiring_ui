@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Job - AI Hiring Automation</title>
+  <meta name="description" content="Update details and status for your job posting.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/forms.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="assets/logo.svg" alt="AI Hiring Platform Logo">
+        <span>AIGravity Hire</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-link" id="nav-dashboard">
+          <i class="fas fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="create-job.html" class="nav-link" id="nav-create-job">
+          <i class="fas fa-plus-circle"></i>
+          <span>Create Job</span>
+        </a>
+        <a href="applications.html" class="nav-link" id="nav-applications">
+          <i class="fas fa-users-cog"></i>
+          <span>Applications</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" aria-label="Toggle Navigation Sidebar">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 class="page-title">Edit Job Posting</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="user-profile">
+            <div class="user-avatar">HM</div>
+            <span style="font-size: 14px; font-weight: 500;">Hiring Manager</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content View -->
+      <section class="content-view">
+        
+        <!-- Edit Job Card -->
+        <div class="card form-card">
+          <div class="form-header">
+            <h2 class="form-title">Edit Job Details</h2>
+            <p class="form-desc">Modify any sections of this job post and click save to apply updates immediately.</p>
+          </div>
+
+          <form id="edit-job-form">
+            <div class="form-grid">
+              
+              <!-- Job Title -->
+              <div class="form-group">
+                <label for="edit-job-title" class="form-label">Job Title</label>
+                <input type="text" id="edit-job-title" class="form-control" placeholder="e.g., Software Engineer" required>
+              </div>
+
+              <!-- Status Dropdown -->
+              <div class="form-group">
+                <label for="edit-job-status" class="form-label">Posting Status</label>
+                <select id="edit-job-status" class="form-control" required style="cursor: pointer;">
+                  <option value="draft">Draft</option>
+                  <option value="open">Open (Accepting Resumes)</option>
+                  <option value="closed">Closed / Inactive</option>
+                </select>
+              </div>
+
+              <!-- Description / Summary -->
+              <div class="form-group">
+                <label for="edit-job-summary" class="form-label">Summary / Description</label>
+                <textarea id="edit-job-summary" class="form-control" required></textarea>
+              </div>
+
+              <!-- Responsibilities -->
+              <div class="form-group">
+                <label for="edit-job-responsibilities" class="form-label">Responsibilities</label>
+                <textarea id="edit-job-responsibilities" class="form-control" required style="min-height: 120px;"></textarea>
+              </div>
+
+              <!-- Requirements -->
+              <div class="form-group">
+                <label for="edit-job-requirements" class="form-label">Requirements</label>
+                <textarea id="edit-job-requirements" class="form-control" required style="min-height: 120px;"></textarea>
+              </div>
+
+              <!-- Nice to Have -->
+              <div class="form-group">
+                <label for="edit-job-nice-to-have" class="form-label">Nice to Have (Highlights) <span class="label-optional">Optional</span></label>
+                <textarea id="edit-job-nice-to-have" class="form-control" style="min-height: 80px;"></textarea>
+              </div>
+
+              <!-- Experience & Education Row -->
+              <div class="form-group-row">
+                <div class="form-group">
+                  <label for="edit-job-experience" class="form-label">Experience Required</label>
+                  <input type="text" id="edit-job-experience" class="form-control" placeholder="e.g., 3+ years">
+                </div>
+                <div class="form-group">
+                  <label for="edit-job-education" class="form-label">Education <span class="label-optional">Optional</span></label>
+                  <input type="text" id="edit-job-education" class="form-control" placeholder="e.g., BS in Computer Science">
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <a href="index.html" class="btn btn-secondary">Cancel</a>
+              <button type="submit" id="btn-save-job" class="btn btn-primary">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/editJob.js"></script>
+</body>
+</html>

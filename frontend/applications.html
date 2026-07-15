@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applications - AI Hiring Automation</title>
+  <meta name="description" content="Review candidate applications, AI matching scores, and schedule interviews.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/forms.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="assets/logo.svg" alt="AI Hiring Platform Logo">
+        <span>AIGravity Hire</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-link" id="nav-dashboard">
+          <i class="fas fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="create-job.html" class="nav-link" id="nav-create-job">
+          <i class="fas fa-plus-circle"></i>
+          <span>Create Job</span>
+        </a>
+        <a href="applications.html" class="nav-link active" id="nav-applications">
+          <i class="fas fa-users-cog"></i>
+          <span>Applications</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" aria-label="Toggle Navigation Sidebar">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 class="page-title">Candidate Review</h1>
+        </div>
+        <div class="topbar-right">
+          <!-- Job Selection dropdown -->
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <label for="job-select-dropdown" style="font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap;">Selected Job:</label>
+            <select id="job-select-dropdown" class="form-control" style="min-width: 260px; padding: 8px 12px; height: 38px; cursor: pointer; border-radius: var(--radius-sm);">
+              <option value="">Select a Job Listing...</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content View -->
+      <section class="content-view">
+        
+        <!-- Job Details Info Card -->
+        <div class="card" id="selected-job-info-card" style="padding: 24px; margin-bottom: 24px; display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <h2 class="job-title-header" id="info-job-title" style="font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">-</h2>
+              <div style="display: flex; gap: 16px; align-items: center;">
+                <span id="info-job-status-badge" class="badge badge-open">-</span>
+                <span style="font-size: 13px; color: var(--text-muted);" id="info-job-applicants-count"><i class="fas fa-users"></i> 0 Applicants</span>
+              </div>
+            </div>
+            <a href="" id="btn-view-job-details" class="btn btn-secondary" style="padding: 8px 14px; font-size: 13px;">
+              <i class="fas fa-eye"></i> View Job Post
+            </a>
+          </div>
+        </div>
+
+        <!-- Application Tabs Section -->
+        <div class="tabs-container">
+          <button class="tab-btn active" id="tab-shortlisted" data-status="shortlisted">
+            <i class="fas fa-user-check"></i> Shortlisted
+          </button>
+          <button class="tab-btn" id="tab-interviewing" data-status="interviewing">
+            <i class="fas fa-calendar-alt"></i> Interviewing
+          </button>
+          <button class="tab-btn" id="tab-rejected" data-status="rejected">
+            <i class="fas fa-user-times"></i> Rejected
+          </button>
+          <div class="tab-indicator" id="tab-indicator"></div>
+        </div>
+
+        <!-- Applications Data Table -->
+        <div class="table-container" id="applications-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="col-shrink">#</th>
+                <th>Candidate Name</th>
+                <th class="col-shrink" style="text-align: center;">AI Match Score</th>
+                <th>Experience</th>
+                <th>Contact</th>
+                <th class="col-shrink" style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="applications-table-body">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State Container -->
+        <div class="card empty-state" id="applications-empty-state">
+          <img src="assets/empty.svg" alt="No Candidates Yet" class="empty-illustration">
+          <h3 class="empty-title" id="empty-title">Select a Job</h3>
+          <p class="empty-desc" id="empty-desc">Please choose a job listing from the dropdown at the top right to view its candidate applications.</p>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL: Interview Scheduling -->
+  <div class="modal-overlay hidden" id="interview-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Schedule Candidate Interview</div>
+        <button class="modal-close" id="btn-close-interview-modal" aria-label="Close Modal"><i class="fas fa-times"></i></button>
+      </div>
+      <form id="schedule-interview-form">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="interview-time" class="form-label">Interview Date & Time</label>
+              <input type="datetime-local" id="interview-time" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="interview-link" class="form-label">Meeting Link</label>
+              <input type="url" id="interview-link" class="form-control" placeholder="https://meet.google.com/xxx-xxxx-xxx" required>
+            </div>
+            <div class="form-group">
+              <label for="interview-notes" class="form-label">Additional Instructions / Notes <span class="label-optional">Optional</span></label>
+              <textarea id="interview-notes" class="form-control" placeholder="Provide details like who will conduct the interview, prep materials, or panel members..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-interview">Cancel</button>
+          <button type="submit" class="btn btn-primary">Schedule & Invite</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Candidate AI Analysis Viewer -->
+  <div class="modal-overlay hidden" id="analysis-modal">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-header">
+        <div class="modal-title"><i class="fas fa-robot" style="color: var(--primary);"></i> AI Matching Report</div>
+        <button class="modal-close" id="btn-close-analysis-modal" aria-label="Close Modal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+          <div>
+            <h3 id="analysis-candidate-name" style="font-size: 18px; font-weight: 700; color: var(--text-main);">-</h3>
+            <span id="analysis-candidate-email" style="font-size: 13px; color: var(--text-muted);">-</span>
+          </div>
+          <div id="analysis-score-badge-container">
+            <!-- Score badge inserted here -->
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Summary -->
+          <div class="form-group">
+            <h4 style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">AI Matching Explanation</h4>
+            <p id="analysis-reason" style="font-size: 14px; color: var(--text-main); line-height: 1.6; margin-top: 6px;">-</p>
+          </div>
+
+          <!-- Strengths & Weaknesses row -->
+          <div class="form-group-row" style="margin-top: 8px;">
+            <div class="form-group">
+              <h4 style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--success); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;"><i class="fas fa-plus-circle"></i> Key Strengths</h4>
+              <ul id="analysis-strengths" style="font-size: 13px; color: var(--text-main); margin-top: 6px; padding-left: 18px; line-height: 1.6;">
+                <!-- List items -->
+              </ul>
+            </div>
+            <div class="form-group">
+              <h4 style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--danger); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;"><i class="fas fa-minus-circle"></i> Missing / Weaknesses</h4>
+              <ul id="analysis-weaknesses" style="font-size: 13px; color: var(--text-main); margin-top: 6px; padding-left: 18px; line-height: 1.6;">
+                <!-- List items -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Skills and Projects -->
+          <div class="form-group" style="margin-top: 8px;">
+            <h4 style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Parsed Resume Profile</h4>
+            <div style="font-size: 13px; margin-top: 8px; display: grid; gap: 8px;">
+              <div><strong>Summary:</strong> <span id="analysis-resume-summary">-</span></div>
+              <div><strong>Parsed Experience:</strong> <span id="analysis-resume-exp">-</span></div>
+              <div><strong>Education:</strong> <span id="analysis-resume-edu">-</span></div>
+              <div><strong>Skills:</strong> <span id="analysis-resume-skills">-</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="background-color: var(--bg); justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary" id="btn-close-analysis-footer">Close Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/applications.js"></script>
+</body>
+</html>

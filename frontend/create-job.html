@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Job - AI Hiring Automation</title>
+  <meta name="description" content="Generate a job posting using AI or create one manually.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/forms.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="assets/logo.svg" alt="AI Hiring Platform Logo">
+        <span>AIGravity Hire</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-link" id="nav-dashboard">
+          <i class="fas fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="create-job.html" class="nav-link active" id="nav-create-job">
+          <i class="fas fa-plus-circle"></i>
+          <span>Create Job</span>
+        </a>
+        <a href="applications.html" class="nav-link" id="nav-applications">
+          <i class="fas fa-users-cog"></i>
+          <span>Applications</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" aria-label="Toggle Navigation Sidebar">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 class="page-title">Create Job Posting</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="user-profile">
+            <div class="user-avatar">HM</div>
+            <span style="font-size: 14px; font-weight: 500;">Hiring Manager</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content View -->
+      <section class="content-view">
+        
+        <!-- Create Job Card -->
+        <div class="card form-card" id="create-job-card">
+          <div class="form-header">
+            <h2 class="form-title">AI Job Description Generator</h2>
+            <p class="form-desc">Provide a job title and optional requirements. Gemini will generate a professional summary, responsibilities, requirements, and key highlights.</p>
+          </div>
+
+          <form id="job-generator-form">
+            <div class="form-grid">
+              
+              <!-- Input Title -->
+              <div class="form-group">
+                <label for="job-title" class="form-label">Job Title</label>
+                <input type="text" id="job-title" class="form-control" placeholder="e.g., Senior Full Stack Engineer (Node.js & React)" required>
+              </div>
+
+              <!-- Input Optional Prompting -->
+              <div class="form-group">
+                <label for="job-requirements-prompt" class="form-label">
+                  Optional Requirements/Context
+                  <span class="label-optional">Optional</span>
+                </label>
+                <textarea id="job-requirements-prompt" class="form-control" placeholder="e.g., 5+ years of AWS experience, remote within EST timezone, knowledge of GraphQL is a plus."></textarea>
+              </div>
+
+              <!-- Action buttons for AI generation -->
+              <div style="margin-top: 8px;">
+                <button type="button" id="btn-generate-ai" class="btn btn-generate" style="width: 100%; height: 48px;">
+                  <i class="fas fa-magic"></i> Generate Job Post
+                </button>
+              </div>
+
+              <!-- Editable fields (Hidden initially, shown after AI response) -->
+              <div id="editable-fields-section" class="hidden" style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 24px;">
+                <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 20px; color: var(--text-main);">
+                  Edit Generated Content
+                </h3>
+                
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="job-summary" class="form-label">Summary / Description</label>
+                    <textarea id="job-summary" class="form-control"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="job-responsibilities" class="form-label">Responsibilities</label>
+                    <textarea id="job-responsibilities" class="form-control" style="min-height: 100px;"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="job-requirements" class="form-label">Requirements</label>
+                    <textarea id="job-requirements" class="form-control" style="min-height: 100px;"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="job-nice-to-have" class="form-label">Nice to Have (Highlights) <span class="label-optional">Optional</span></label>
+                    <textarea id="job-nice-to-have" class="form-control" style="min-height: 80px;"></textarea>
+                  </div>
+
+                  <div class="form-group-row">
+                    <div class="form-group">
+                      <label for="job-experience" class="form-label">Experience Required</label>
+                      <input type="text" id="job-experience" class="form-control" placeholder="e.g., 5+ years">
+                    </div>
+                    <div class="form-group">
+                      <label for="job-education" class="form-label">Education <span class="label-optional">Optional</span></label>
+                      <input type="text" id="job-education" class="form-control" placeholder="e.g., Bachelor's in CS">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Confirm / Manual Create Action footer -->
+            <div class="form-actions">
+              <a href="index.html" class="btn btn-secondary">Cancel</a>
+              <button type="submit" id="btn-confirm-post" class="btn btn-primary" disabled>
+                Confirm & Publish Job
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Success Screen (Hidden initially) -->
+        <div class="card form-card success-screen hidden" id="success-card">
+          <div class="success-icon">
+            <i class="fas fa-check"></i>
+          </div>
+          <h2 class="success-title">Job Created Successfully!</h2>
+          <p class="success-desc">The job post is now live. Share the candidate application page link with candidates or on external boards to start collecting resumes.</p>
+          
+          <div class="share-container">
+            <span class="share-label">Job ID</span>
+            <div class="share-url" id="success-job-id" style="margin-bottom: 16px; user-select: text; font-family: monospace;">-</div>
+
+            <span class="share-label">Candidate Application Link</span>
+            <div class="share-input-group">
+              <div class="share-url" id="candidate-link-placeholder">https://...</div>
+              <button type="button" class="btn btn-primary" id="btn-copy-link" style="padding: 0 16px;">
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+          </div>
+
+          <div class="share-instructions">
+            <div class="instruction-item">
+              <i class="fas fa-bullhorn"></i>
+              <div class="instruction-text">
+                <strong>Advertise the position:</strong> Copy this job description to LinkedIn, Indeed, or any hiring platform.
+              </div>
+            </div>
+            <div class="instruction-item">
+              <i class="fas fa-link"></i>
+              <div class="instruction-text">
+                <strong>Collect resumes directly:</strong> Share the candidate link below to start receiving and analyzing candidate PDFs automatically.
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 32px; display: flex; justify-content: center; gap: 12px;">
+            <a href="index.html" class="btn btn-secondary">Go to Dashboard</a>
+            <a href="create-job.html" class="btn btn-primary">Create Another Job</a>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/createJob.js"></script>
+</body>
+</html>
