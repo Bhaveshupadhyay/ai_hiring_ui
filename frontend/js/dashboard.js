@@ -1,9 +1,13 @@
 import { getJobs, updateJobStatus, deleteJob, getJobApplicantsCount } from './api.js';
 import { showToast, showConfirm, showLoader, initSidebar } from './utils.js';
+import { initAnalytics, trackEvent } from './analytics.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Initialize responsive sidebar drawer
   initSidebar();
+  
+  // Initialize Google Analytics
+  initAnalytics();
   
   // Load and render page data
   await loadDashboardData();
@@ -134,6 +138,7 @@ async function handleCloseJob(e) {
   try {
     await updateJobStatus(jobId, 'closed');
     showToast('Job Closed', 'The job status has been set to closed.', 'success');
+    trackEvent('job_closed', { job_id: jobId });
     await loadDashboardData();
   } catch (error) {
     console.error('Failed to close job:', error);
@@ -163,6 +168,7 @@ async function handleDeleteJob(e) {
   try {
     await deleteJob(jobId);
     showToast('Job Deleted', 'The job listing has been permanently deleted.', 'success');
+    trackEvent('job_deleted', { job_id: jobId });
     await loadDashboardData();
   } catch (error) {
     console.error('Failed to delete job:', error);

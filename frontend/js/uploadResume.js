@@ -1,7 +1,9 @@
 import { getJob, uploadResume } from './api.js';
 import { showToast, showLoader, getQueryParam, formatDate } from './utils.js';
+import { initAnalytics, trackEvent } from './analytics.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  initAnalytics();
   await initUploadFlow();
 });
 
@@ -55,6 +57,7 @@ async function initUploadFlow() {
     }
 
     jobDetailsSection.style.display = 'block';
+    trackEvent('candidate_view_job_page', { job_id: jobId, title: job.title });
     
   } catch (error) {
     console.error('Failed to load job details for candidate page:', error);
@@ -169,6 +172,7 @@ async function initUploadFlow() {
       await uploadResume(jobId, selectedFile);
       
       showToast('Submitted!', 'Your application has been received successfully.', 'success');
+      trackEvent('candidate_resume_submitted', { job_id: jobId });
       
       // Show success screen, hide upload controls
       uploadCard.classList.add('hidden');
@@ -183,6 +187,7 @@ async function initUploadFlow() {
       // Display error banner
       errorAlert.classList.remove('hidden');
       errorMessage.textContent = error.message || 'An error occurred during upload. Please verify the PDF is valid and you have not already applied.';
+      trackEvent('candidate_resume_submission_failed', { job_id: jobId, error: error.message || 'Unknown error' });
       
       // Reset button
       submitBtn.disabled = false;
