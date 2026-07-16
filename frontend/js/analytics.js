@@ -29,10 +29,20 @@ export function initAnalytics() {
       function gtag(){dataLayer.push(arguments);}
       window.gtag = gtag;
       gtag('js', new Date());
-      gtag('config', '${GA_MEASUREMENT_ID}');
+      
+      // Automatically detect custom 'src' query parameters and map them to campaign source/medium
+      const urlParams = new URLSearchParams(window.location.search);
+      const src = urlParams.get('src');
+      const configOptions = {};
+      if (src) {
+        configOptions['campaign_source'] = src;
+        configOptions['campaign_medium'] = src === 'email' ? 'email' : 'custom_link';
+      }
+      
+      gtag('config', '${GA_MEASUREMENT_ID}', configOptions);
     `;
     document.head.appendChild(initScript);
-    console.log('[Analytics] Google Analytics successfully loaded for ID:', GA_MEASUREMENT_ID);
+    console.log('[Analytics] Google Analytics successfully loaded for ID:', GA_MEASUREMENT_ID, src ? `with campaign source: ${src}` : '');
   } catch (error) {
     console.error('[Analytics] Failed to initialize Google Analytics:', error);
   }
