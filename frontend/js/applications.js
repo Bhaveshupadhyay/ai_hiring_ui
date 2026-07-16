@@ -14,6 +14,7 @@ import {
   getQueryParam, 
   initSidebar 
 } from './utils.js';
+import { initAnalytics, trackEvent } from './analytics.js';
 
 let activeJobId = null;
 let activeTab = 'shortlisted';
@@ -22,6 +23,7 @@ let selectedAppForInterview = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   initSidebar();
+  initAnalytics();
   setupTabs();
   await loadJobsDropdown();
   
@@ -155,6 +157,7 @@ async function loadSelectedJobData() {
     // Populate Job Info card
     document.getElementById('info-job-title').textContent = job.title;
     document.getElementById('info-job-applicants-count').innerHTML = `<i class="fas fa-users"></i> ${applicantsCount.count} Applicants`;
+    trackEvent('hm_view_applications_page', { job_id: activeJobId, title: job.title });
     
     const badge = document.getElementById('info-job-status-badge');
     badge.textContent = job.status;
@@ -390,6 +393,7 @@ async function handleStatusChange(e) {
   try {
     await updateApplicationStatus(appId, nextStatus);
     showToast('Status Updated', `Candidate was successfully moved to ${nextStatus}.`, 'success');
+    trackEvent('application_status_changed', { application_id: appId, status: nextStatus });
     await refreshApplications();
   } catch (err) {
     console.error('Failed to change application status:', err);
@@ -458,6 +462,7 @@ async function handleScheduleSubmit(e) {
     await updateApplicationStatus(selectedAppForInterview.id, 'interviewing');
 
     showToast('Interview Scheduled', 'Interview record created. Moving candidate...', 'success');
+    trackEvent('interview_scheduled', { application_id: selectedAppForInterview.id });
 
     // 3. Draft & trigger email client invitation (mailto)
     triggerMailtoInvite(selectedAppForInterview, inputTime, inputLink, inputNotes);
@@ -568,6 +573,7 @@ async function handleViewReport(e) {
 
     // Open Modal
     document.getElementById('analysis-modal').classList.remove('hidden');
+    trackEvent('ai_report_opened', { application_id: appId, candidate_id: app.candidate_id });
 
   } catch (err) {
     console.error('Failed to load candidate analysis:', err);

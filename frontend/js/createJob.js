@@ -1,8 +1,10 @@
 import { generateJobDescription, updateJob } from './api.js';
 import { showToast, showLoader, copyToClipboard, initSidebar } from './utils.js';
+import { initAnalytics, trackEvent } from './analytics.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initSidebar();
+  initAnalytics();
   initCreateJobFlow();
 });
 
@@ -46,6 +48,7 @@ function initCreateJobFlow() {
       const jobResponse = await generateJobDescription(generationTitle);
       
       draftJobId = jobResponse.id;
+      trackEvent('ai_job_generated', { title: titleVal });
 
       // Populate form fields with the AI response
       document.getElementById('job-summary').value = jobResponse.summary || '';
@@ -102,6 +105,7 @@ function initCreateJobFlow() {
     try {
       const publishedJob = await updateJob(draftJobId, updatedJobData);
       showToast('Published!', 'Your job posting is now live.', 'success');
+      trackEvent('job_published', { job_id: publishedJob.id, title: updatedJobData.title });
       
       // Show Success Card and hide Form
       document.getElementById('create-job-card').classList.add('hidden');

@@ -1,8 +1,10 @@
 import { getJob, updateJob } from './api.js';
 import { showToast, showLoader, getQueryParam, initSidebar } from './utils.js';
+import { initAnalytics, trackEvent } from './analytics.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   initSidebar();
+  initAnalytics();
   await loadJobDetails();
 });
 
@@ -69,6 +71,7 @@ form.addEventListener('submit', async (e) => {
   try {
     await updateJob(jobId, jobData);
     showToast('Changes Saved', 'The job posting has been successfully updated.', 'success');
+    trackEvent('job_updated', { job_id: jobId, title: jobData.title });
     
     // Redirect after brief delay so toast can be seen
     setTimeout(() => {
