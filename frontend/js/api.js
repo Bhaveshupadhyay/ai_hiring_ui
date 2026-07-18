@@ -5,7 +5,7 @@
 
 // Determine backend base url
 const getBaseUrl = () => {
-  return 'https://ai-hiring-95i2.onrender.com';
+  return 'http://127.0.0.1:8000';
 };
 
 const BASE_URL = getBaseUrl();

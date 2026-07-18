@@ -1,4 +1,4 @@
-import { getJobs, updateJobStatus, deleteJob, getJobApplicantsCount } from './api.js';
+import { getJobs, updateJobStatus, deleteJob } from './api.js';
 import { showToast, showConfirm, showLoader, initSidebar } from './utils.js';
 import { initAnalytics, trackEvent } from './analytics.js';
 
@@ -21,18 +21,11 @@ async function loadDashboardData() {
   try {
     const jobs = await getJobs();
     
-    // Fetch applicant count for each job in parallel
-    const jobsWithCounts = await Promise.all(
-      jobs.map(async (job) => {
-        try {
-          const applicantRes = await getJobApplicantsCount(job.id);
-          return { ...job, applicantCount: applicantRes.count };
-        } catch (err) {
-          console.error(`Failed to load applicant count for job ${job.id}:`, err);
-          return { ...job, applicantCount: 0 };
-        }
-      })
-    );
+    // Map jobs to extract applicant count directly from the job response object
+    const jobsWithCounts = jobs.map((job) => {
+      const count = job.applicants_count !== undefined ? job.applicants_count : 0;
+      return { ...job, applicantCount: count };
+    });
 
     // Update KPI Metrics
     document.getElementById('metric-total-jobs').textContent = jobs.length;
