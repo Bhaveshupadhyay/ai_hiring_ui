@@ -1,7 +1,6 @@
 import { 
   getJobs, 
   getJob, 
-  getJobApplicantsCount, 
   getApplications, 
   updateApplicationStatus, 
   scheduleInterview, 
@@ -20,6 +19,7 @@ let activeJobId = null;
 let activeTab = 'shortlisted';
 let applications = [];
 let selectedAppForInterview = null;
+let jobsList = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
   initSidebar();
@@ -54,6 +54,7 @@ async function loadJobsDropdown() {
 
   try {
     const jobs = await getJobs();
+    jobsList = jobs;
     
     // Sort jobs by title
     jobs.sort((a, b) => a.title.localeCompare(b.title));
@@ -148,15 +149,17 @@ async function loadSelectedJobData() {
 
   showLoader(true);
   try {
-    // Load job info & applicant count in parallel
-    const [job, applicantsCount] = await Promise.all([
-      getJob(activeJobId),
-      getJobApplicantsCount(activeJobId)
-    ]);
+    // Find the job and its applicant count from the cache (or fetch if not cached)
+    let job = jobsList.find(j => j.id === activeJobId);
+    if (!job) {
+      job = await getJob(activeJobId);
+    }
+
+    const count = job.applicants_count !== undefined ? job.applicants_count : 0;
 
     // Populate Job Info card
     document.getElementById('info-job-title').textContent = job.title;
-    document.getElementById('info-job-applicants-count').innerHTML = `<i class="fas fa-users"></i> ${applicantsCount.count} Applicants`;
+    document.getElementById('info-job-applicants-count').innerHTML = `<i class="fas fa-users"></i> ${count} Applicants`;
     trackEvent('hm_view_applications_page', { job_id: activeJobId, title: job.title });
     
     const badge = document.getElementById('info-job-status-badge');
