@@ -19,6 +19,14 @@ function initCreateJobFlow() {
 
   let draftJobId = null;
 
+  // Prompt chips handling
+  document.querySelectorAll('.prompt-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      titleInput.value = chip.dataset.title || chip.textContent.replace('+', '').trim();
+      titleInput.focus();
+    });
+  });
+
   // Track if AI generation was done
   generateBtn.addEventListener('click', async () => {
     // Basic title validation
@@ -37,7 +45,7 @@ function initCreateJobFlow() {
     promptInput.disabled = true;
     
     const originalBtnHtml = generateBtn.innerHTML;
-    generateBtn.innerHTML = '<span class="spinner"></span> Generating description...';
+    generateBtn.innerHTML = '<span class="spinner"></span> AI Generating Job Specs...';
 
     try {
       // Package prompt context in the title param since the API schema only takes 'title'
@@ -65,7 +73,11 @@ function initCreateJobFlow() {
       editableSection.classList.remove('hidden');
       confirmBtn.disabled = false;
 
-      showToast('Generated!', 'AI has generated the job description. Please review and edit details below.', 'success');
+      showToast('AI Specs Ready', 'Job details successfully generated. Please review and edit below.', 'success');
+      
+      // Smooth scroll to editable section
+      editableSection.scrollIntoView({ behavior: 'smooth' });
+
     } catch (error) {
       console.error('AI Generation failed:', error);
       showToast('Generation Failed', error.message || 'The AI service was unable to generate description.', 'error');

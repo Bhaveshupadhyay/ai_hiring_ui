@@ -2,6 +2,8 @@ import { getJobs, updateJobStatus, deleteJob } from './api.js';
 import { showToast, showConfirm, showLoader, initSidebar } from './utils.js';
 import { initAnalytics, trackEvent } from './analytics.js';
 
+let allJobsList = [];
+
 document.addEventListener('DOMContentLoaded', async () => {
   // Initialize responsive sidebar drawer
   initSidebar();
@@ -9,9 +11,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize Google Analytics
   initAnalytics();
   
+  // Setup Search Input Filter
+  setupSearchFilter();
+
   // Load and render page data
   await loadDashboardData();
 });
+
+/**
+ * Setup live client-side search filtering on job title
+ */
+function setupSearchFilter() {
+  const searchInput = document.getElementById('jobs-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      const filtered = allJobsList.filter(j => j.title.toLowerCase().includes(query));
+      renderJobsTable(filtered);
+    });
+  }
+}
 
 /**
  * Load job postings and applicant counts, update metrics, and render list.
@@ -26,6 +45,8 @@ async function loadDashboardData() {
       const count = job.applicants_count !== undefined ? job.applicants_count : 0;
       return { ...job, applicantCount: count };
     });
+
+    allJobsList = jobsWithCounts;
 
     // Update KPI Metrics
     document.getElementById('metric-total-jobs').textContent = jobs.length;
@@ -57,6 +78,17 @@ function renderJobsTable(jobs) {
   const tableBody = document.getElementById('jobs-table-body');
   tableBody.innerHTML = '';
 
+  if (jobs.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 32px; color: var(--text-muted);">
+          No matching job postings found.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
   jobs.forEach((job, index) => {
     const row = document.createElement('tr');
     
@@ -66,14 +98,15 @@ function renderJobsTable(jobs) {
     if (job.status === 'closed') badgeClass = 'badge-closed';
 
     row.innerHTML = `
-      <td data-label="#" class="col-shrink font-semibold">${index + 1}</td>
+      <td data-label="#" class="col-shrink font-semibold mono-font">${index + 1}</td>
       <td data-label="Job Title">
-        <a href="applications.html?jobId=${job.id}" class="job-title-cell nav-link-inner" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+        <a href="applications.html?jobId=${job.id}" class="job-title-cell" style="display: inline-flex; align-items: center; gap: 8px;">
+          <i class="fas fa-briefcase" style="font-size: 13px; opacity: 0.7;"></i>
           ${escapeHtml(job.title)}
         </a>
       </td>
       <td data-label="Total Applicants">
-        <span class="font-medium">${job.applicantCount}</span>
+        <span class="mono-font" style="font-weight: 700; color: var(--text-main);">${job.applicantCount}</span>
       </td>
       <td data-label="Status">
         <span class="badge ${badgeClass}">${job.status}</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - AI Hiring Automation</title>
+  <title>Dashboard - AIGravity Hire Platform</title>
   <meta name="description" content="Manage job listings, candidates, and AI matching for your recruitment workflow.">
   
   <!-- Fonts & Icons -->
@@ -19,7 +19,7 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <div class="sidebar-logo">
-        <img src="assets/logo.svg" alt="AI Hiring Platform Logo">
+        <img src="assets/logo.svg" alt="AIGravity Hire Logo">
         <span>AIGravity Hire</span>
       </div>
       <nav class="sidebar-nav">
@@ -28,7 +28,7 @@
           <span>Dashboard</span>
         </a>
         <a href="create-job.html" class="nav-link" id="nav-create-job">
-          <i class="fas fa-plus-circle"></i>
+          <i class="fas fa-magic"></i>
           <span>Create Job</span>
         </a>
         <a href="applications.html" class="nav-link" id="nav-applications">
@@ -36,6 +36,15 @@
           <span>Applications</span>
         </a>
       </nav>
+      <div class="sidebar-footer">
+        <div class="ai-status-card">
+          <div class="pulse-dot"></div>
+          <div class="ai-status-info">
+            <span class="ai-status-title">Gemini AI Matcher</span>
+            <span class="ai-status-sub">Engine Active & Ready</span>
+          </div>
+        </div>
+      </div>
     </aside>
 
     <!-- Main Content -->
@@ -46,12 +55,12 @@
           <button class="menu-toggle" aria-label="Toggle Navigation Sidebar">
             <i class="fas fa-bars"></i>
           </button>
-          <h1 class="page-title">Hiring Manager Dashboard</h1>
+          <h1 class="page-title">Recruitment Dashboard</h1>
         </div>
         <div class="topbar-right">
           <div class="user-profile">
             <div class="user-avatar">HM</div>
-            <span style="font-size: 14px; font-weight: 500;">Hiring Manager</span>
+            <span style="font-size: 14px; font-weight: 600;">Hiring Manager</span>
           </div>
         </div>
       </header>
@@ -59,6 +68,19 @@
       <!-- Content View -->
       <section class="content-view">
         
+        <!-- Quick Action Hero Banner -->
+        <div class="quick-action-banner">
+          <div class="quick-action-info">
+            <h3>AI-Powered Hiring Automation</h3>
+            <p>Generate job postings, parse candidate resumes, and rank top talent automatically.</p>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <a href="create-job.html" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Generate Job Post
+            </a>
+          </div>
+        </div>
+
         <!-- Metrics Grid -->
         <div class="metrics-grid">
           <div class="card metric-card">
@@ -66,15 +88,45 @@
               <i class="fas fa-briefcase"></i>
             </div>
             <div class="metric-info">
-              <span class="metric-label">Total Job Posts</span>
+              <span class="metric-label">Active Job Posts</span>
               <span class="metric-value" id="metric-total-jobs">-</span>
+              <span class="metric-trend"><i class="fas fa-arrow-up"></i> Live Positions</span>
+            </div>
+          </div>
+
+          <div class="card metric-card">
+            <div class="metric-icon" style="background: linear-gradient(135deg, #06B6D4 0%, #10B981 100%);">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">AI Match Engine</span>
+              <span class="metric-value">98.4%</span>
+              <span class="metric-trend"><i class="fas fa-check-circle"></i> High Precision Parsing</span>
+            </div>
+          </div>
+
+          <div class="card metric-card">
+            <div class="metric-icon" style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);">
+              <i class="fas fa-user-check"></i>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Pipeline Efficiency</span>
+              <span class="metric-value">Instant</span>
+              <span class="metric-trend"><i class="fas fa-bolt"></i> Real-time Scoring</span>
             </div>
           </div>
         </div>
 
-        <!-- Section Job Listings -->
+        <!-- Section Header & Filter Toolbar -->
         <div class="section-header">
           <h2 class="section-title">All Job Listings</h2>
+        </div>
+
+        <div class="toolbar-container">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="jobs-search-input" placeholder="Search positions by title...">
+          </div>
           <a href="create-job.html" class="btn btn-primary">
             <i class="fas fa-plus"></i> Create Job Post
           </a>
@@ -89,7 +141,7 @@
                 <th>Job Title</th>
                 <th>Total Applicants</th>
                 <th>Status</th>
-                <th class="col-shrink">Actions</th>
+                <th class="col-shrink" style="text-align: right;">Actions</th>
               </tr>
             </thead>
             <tbody id="jobs-table-body">

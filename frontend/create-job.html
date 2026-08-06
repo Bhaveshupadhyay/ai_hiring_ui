@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Job - AI Hiring Automation</title>
+  <title>Create Job - AIGravity Hire Platform</title>
   <meta name="description" content="Generate a job posting using AI or create one manually.">
   
   <!-- Fonts & Icons -->
@@ -19,7 +19,7 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <div class="sidebar-logo">
-        <img src="assets/logo.svg" alt="AI Hiring Platform Logo">
+        <img src="assets/logo.svg" alt="AIGravity Hire Logo">
         <span>AIGravity Hire</span>
       </div>
       <nav class="sidebar-nav">
@@ -28,7 +28,7 @@
           <span>Dashboard</span>
         </a>
         <a href="create-job.html" class="nav-link active" id="nav-create-job">
-          <i class="fas fa-plus-circle"></i>
+          <i class="fas fa-magic"></i>
           <span>Create Job</span>
         </a>
         <a href="applications.html" class="nav-link" id="nav-applications">
@@ -36,6 +36,15 @@
           <span>Applications</span>
         </a>
       </nav>
+      <div class="sidebar-footer">
+        <div class="ai-status-card">
+          <div class="pulse-dot"></div>
+          <div class="ai-status-info">
+            <span class="ai-status-title">Gemini AI Generator</span>
+            <span class="ai-status-sub">Ready for Prompting</span>
+          </div>
+        </div>
+      </div>
     </aside>
 
     <!-- Main Content -->
@@ -51,7 +60,7 @@
         <div class="topbar-right">
           <div class="user-profile">
             <div class="user-avatar">HM</div>
-            <span style="font-size: 14px; font-weight: 500;">Hiring Manager</span>
+            <span style="font-size: 14px; font-weight: 600;">Hiring Manager</span>
           </div>
         </div>
       </header>
@@ -62,8 +71,8 @@
         <!-- Create Job Card -->
         <div class="card form-card" id="create-job-card">
           <div class="form-header">
-            <h2 class="form-title">AI Job Description Generator</h2>
-            <p class="form-desc">Provide a job title and optional requirements. Gemini will generate a professional summary, responsibilities, requirements, and key highlights.</p>
+            <h2 class="form-title"><i class="fas fa-robot" style="color: var(--primary);"></i> AI Job Description Studio</h2>
+            <p class="form-desc">Type a job title or click a sample role below. Gemini AI will automatically structure responsibilities, requirements, and highlights.</p>
           </div>
 
           <form id="job-generator-form">
@@ -73,12 +82,20 @@
               <div class="form-group">
                 <label for="job-title" class="form-label">Job Title</label>
                 <input type="text" id="job-title" class="form-control" placeholder="e.g., Senior Full Stack Engineer (Node.js & React)" required>
+                
+                <!-- Quick Prompt Chips -->
+                <div class="prompt-chips-container">
+                  <span class="prompt-chip" data-title="Senior Full Stack Engineer (Node.js & React)">+ Senior Full Stack</span>
+                  <span class="prompt-chip" data-title="AI & Machine Learning Engineer">+ AI/ML Engineer</span>
+                  <span class="prompt-chip" data-title="Senior Cloud DevOps Architect">+ Cloud Architect</span>
+                  <span class="prompt-chip" data-title="Lead Product Manager - AI Tools">+ Product Manager</span>
+                </div>
               </div>
 
               <!-- Input Optional Prompting -->
               <div class="form-group">
                 <label for="job-requirements-prompt" class="form-label">
-                  Optional Requirements/Context
+                  Optional Context & Requirements
                   <span class="label-optional">Optional</span>
                 </label>
                 <textarea id="job-requirements-prompt" class="form-control" placeholder="e.g., 5+ years of AWS experience, remote within EST timezone, knowledge of GraphQL is a plus."></textarea>
@@ -86,31 +103,31 @@
 
               <!-- Action buttons for AI generation -->
               <div style="margin-top: 8px;">
-                <button type="button" id="btn-generate-ai" class="btn btn-generate" style="width: 100%; height: 48px;">
-                  <i class="fas fa-magic"></i> Generate Job Post
+                <button type="button" id="btn-generate-ai" class="btn btn-generate" style="width: 100%; height: 50px;">
+                  <i class="fas fa-wand-magic-sparkles"></i> Generate Job Post with AI
                 </button>
               </div>
 
               <!-- Editable fields (Hidden initially, shown after AI response) -->
-              <div id="editable-fields-section" class="hidden" style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 24px;">
-                <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 20px; color: var(--text-main);">
-                  Edit Generated Content
+              <div id="editable-fields-section" class="hidden" style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 28px;">
+                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 24px; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-edit" style="color: var(--accent-cyan);"></i> Review & Refine Generated Content
                 </h3>
                 
                 <div class="form-grid">
                   <div class="form-group">
-                    <label for="job-summary" class="form-label">Summary / Description</label>
+                    <label for="job-summary" class="form-label">Summary / Overview</label>
                     <textarea id="job-summary" class="form-control"></textarea>
                   </div>
 
                   <div class="form-group">
-                    <label for="job-responsibilities" class="form-label">Responsibilities</label>
-                    <textarea id="job-responsibilities" class="form-control" style="min-height: 100px;"></textarea>
+                    <label for="job-responsibilities" class="form-label">Key Responsibilities</label>
+                    <textarea id="job-responsibilities" class="form-control" style="min-height: 110px;"></textarea>
                   </div>
 
                   <div class="form-group">
-                    <label for="job-requirements" class="form-label">Requirements</label>
-                    <textarea id="job-requirements" class="form-control" style="min-height: 100px;"></textarea>
+                    <label for="job-requirements" class="form-label">Requirements & Skills</label>
+                    <textarea id="job-requirements" class="form-control" style="min-height: 110px;"></textarea>
                   </div>
 
                   <div class="form-group">
@@ -125,7 +142,7 @@
                     </div>
                     <div class="form-group">
                       <label for="job-education" class="form-label">Education <span class="label-optional">Optional</span></label>
-                      <input type="text" id="job-education" class="form-control" placeholder="e.g., Bachelor's in CS">
+                      <input type="text" id="job-education" class="form-control" placeholder="e.g., Bachelor's in Computer Science">
                     </div>
                   </div>
                 </div>
@@ -137,7 +154,7 @@
             <div class="form-actions">
               <a href="index.html" class="btn btn-secondary">Cancel</a>
               <button type="submit" id="btn-confirm-post" class="btn btn-primary" disabled>
-                Confirm & Publish Job
+                <i class="fas fa-check-circle"></i> Confirm & Publish Job
               </button>
             </div>
           </form>
@@ -148,18 +165,18 @@
           <div class="success-icon">
             <i class="fas fa-check"></i>
           </div>
-          <h2 class="success-title">Job Created Successfully!</h2>
-          <p class="success-desc">The job post is now live. Share the candidate application page link with candidates or on external boards to start collecting resumes.</p>
+          <h2 class="success-title">Job Created & Published!</h2>
+          <p class="success-desc">The job post is now live. Share the candidate application link below to start receiving and automatically ranking candidate resumes.</p>
           
           <div class="share-container">
-            <span class="share-label">Job ID</span>
-            <div class="share-url" id="success-job-id" style="margin-bottom: 16px; user-select: text; font-family: monospace;">-</div>
+            <span class="share-label">Position ID</span>
+            <div class="share-url mono-font" id="success-job-id" style="margin-bottom: 16px; user-select: text;">-</div>
 
             <span class="share-label">Candidate Application Link</span>
             <div class="share-input-group">
-              <div class="share-url" id="candidate-link-placeholder">https://...</div>
-              <button type="button" class="btn btn-primary" id="btn-copy-link" style="padding: 0 16px;">
-                <i class="fas fa-copy"></i> Copy
+              <div class="share-url mono-font" id="candidate-link-placeholder">https://...</div>
+              <button type="button" class="btn btn-primary" id="btn-copy-link" style="padding: 0 20px;">
+                <i class="fas fa-copy"></i> Copy Link
               </button>
             </div>
           </div>
@@ -168,18 +185,18 @@
             <div class="instruction-item">
               <i class="fas fa-bullhorn"></i>
               <div class="instruction-text">
-                <strong>Advertise the position:</strong> Copy this job description to LinkedIn, Indeed, or any hiring platform.
+                <strong>Promote position:</strong> Post this job description on LinkedIn, Indeed, or internal career portals.
               </div>
             </div>
             <div class="instruction-item">
-              <i class="fas fa-link"></i>
+              <i class="fas fa-robot"></i>
               <div class="instruction-text">
-                <strong>Collect resumes directly:</strong> Share the candidate link below to start receiving and analyzing candidate PDFs automatically.
+                <strong>Automated Candidate Scoring:</strong> Candidates who apply via this portal will have their PDF resumes parsed and scored by Gemini AI automatically.
               </div>
             </div>
           </div>
 
-          <div style="margin-top: 32px; display: flex; justify-content: center; gap: 12px;">
+          <div style="margin-top: 32px; display: flex; justify-content: center; gap: 14px;">
             <a href="index.html" class="btn btn-secondary">Go to Dashboard</a>
             <a href="create-job.html" class="btn btn-primary">Create Another Job</a>
           </div>

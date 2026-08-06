@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Job - AI Hiring Automation</title>
+  <title>Edit Job - AIGravity Hire Platform</title>
   <meta name="description" content="Update details and status for your job posting.">
   
   <!-- Fonts & Icons -->
@@ -19,7 +19,7 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <div class="sidebar-logo">
-        <img src="assets/logo.svg" alt="AI Hiring Platform Logo">
+        <img src="assets/logo.svg" alt="AIGravity Hire Logo">
         <span>AIGravity Hire</span>
       </div>
       <nav class="sidebar-nav">
@@ -28,7 +28,7 @@
           <span>Dashboard</span>
         </a>
         <a href="create-job.html" class="nav-link" id="nav-create-job">
-          <i class="fas fa-plus-circle"></i>
+          <i class="fas fa-magic"></i>
           <span>Create Job</span>
         </a>
         <a href="applications.html" class="nav-link" id="nav-applications">
@@ -36,6 +36,15 @@
           <span>Applications</span>
         </a>
       </nav>
+      <div class="sidebar-footer">
+        <div class="ai-status-card">
+          <div class="pulse-dot"></div>
+          <div class="ai-status-info">
+            <span class="ai-status-title">Job Editor</span>
+            <span class="ai-status-sub">Updating Parameters</span>
+          </div>
+        </div>
+      </div>
     </aside>
 
     <!-- Main Content -->
@@ -51,7 +60,7 @@
         <div class="topbar-right">
           <div class="user-profile">
             <div class="user-avatar">HM</div>
-            <span style="font-size: 14px; font-weight: 500;">Hiring Manager</span>
+            <span style="font-size: 14px; font-weight: 600;">Hiring Manager</span>
           </div>
         </div>
       </header>
@@ -62,8 +71,8 @@
         <!-- Edit Job Card -->
         <div class="card form-card">
           <div class="form-header">
-            <h2 class="form-title">Edit Job Details</h2>
-            <p class="form-desc">Modify any sections of this job post and click save to apply updates immediately.</p>
+            <h2 class="form-title"><i class="fas fa-edit" style="color: var(--primary);"></i> Edit Job Details</h2>
+            <p class="form-desc">Modify any section of this job post and click save to apply updates immediately to the candidate portal.</p>
           </div>
 
           <form id="edit-job-form">
@@ -127,7 +136,7 @@
             <div class="form-actions">
               <a href="index.html" class="btn btn-secondary">Cancel</a>
               <button type="submit" id="btn-save-job" class="btn btn-primary">
-                Save Changes
+                <i class="fas fa-save"></i> Save Changes
               </button>
             </div>
           </form>
